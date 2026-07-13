@@ -1,0 +1,17 @@
+{
+  "name": "VCE PE Review Coach",
+  "short_name": "PE Review",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#eff6ff",
+  "theme_color": "#0f172a",
+  "description": "Spaced and retrieval practice planner for VCE Physical Education students.",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

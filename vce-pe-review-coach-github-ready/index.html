@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="A spaced and retrieval practice app for VCE Physical Education students.">
+  <title>VCE PE Review Coach</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">PE</div>
+      <div>
+        <h1>VCE PE Review Coach</h1>
+        <p>Learn it. Retrieve it. Keep it.</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button id="notificationBtn" class="btn secondary">Enable reminders</button>
+      <button id="installBtn" class="btn secondary hidden">Install app</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero panel">
+      <div>
+        <span class="eyebrow">SPACED + RETRIEVAL PRACTICE</span>
+        <h2>Turn today’s VCE PE learning into long-term memory.</h2>
+        <p>
+          Log content when you learn it. The app schedules reviews after 2 days,
+          7 days and 30 days, then rewards you whenever retrieval practice is completed.
+        </p>
+      </div>
+      <div class="level-card">
+        <div class="level-circle">
+          <span>LEVEL</span>
+          <strong id="levelValue">1</strong>
+        </div>
+        <div class="level-info">
+          <div class="level-meta">
+            <span id="xpLabel">0 / 100 XP</span>
+            <strong id="pointsLabel">0 points</strong>
+          </div>
+          <div class="progress"><div id="xpBar"></div></div>
+          <small id="levelMessage">100 XP until Level 2</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats">
+      <article class="stat panel">
+        <span>🔥</span>
+        <div><strong id="streakStat">0</strong><small>day streak</small></div>
+      </article>
+      <article class="stat panel">
+        <span>✅</span>
+        <div><strong id="reviewsStat">0</strong><small>reviews completed</small></div>
+      </article>
+      <article class="stat panel">
+        <span>📚</span>
+        <div><strong id="topicsStat">0</strong><small>active topics</small></div>
+      </article>
+      <article class="stat panel">
+        <span>🏆</span>
+        <div><strong id="badgesStat">0</strong><small>badges earned</small></div>
+      </article>
+    </section>
+
+    <section class="layout">
+      <div class="main-column">
+        <section class="panel section">
+          <div class="section-title">
+            <div>
+              <span class="eyebrow">TODAY’S PRIORITY</span>
+              <h2>Retrieval practice queue</h2>
+            </div>
+            <span id="duePill" class="pill">0 due</span>
+          </div>
+          <div id="reviewQueue" class="review-grid"></div>
+          <div id="emptyQueue" class="empty">
+            <div>🎯</div>
+            <h3>You are up to date.</h3>
+            <p>Add newly learned content or return when the next review becomes due.</p>
+          </div>
+        </section>
+
+        <section class="panel section">
+          <div class="section-title">
+            <div>
+              <span class="eyebrow">YOUR CONTENT</span>
+              <h2>VCE PE learning log</h2>
+            </div>
+            <div class="filters">
+              <button class="filter active" data-filter="all">All</button>
+              <button class="filter" data-filter="due">Due</button>
+              <button class="filter" data-filter="complete">Complete</button>
+            </div>
+          </div>
+          <div id="topicList" class="topic-list"></div>
+        </section>
+      </div>
+
+      <aside class="sidebar">
+        <section class="panel section">
+          <span class="eyebrow">ADD NEW LEARNING</span>
+          <h2>Log a topic</h2>
+          <form id="topicForm">
+            <label>
+              Unit
+              <select id="unit" required>
+                <option>Unit 1</option>
+                <option>Unit 2</option>
+                <option selected>Unit 3</option>
+                <option>Unit 4</option>
+              </select>
+            </label>
+            <label>
+              Area of Study
+              <input id="area" maxlength="90" required placeholder="e.g. Energy systems and fatigue">
+            </label>
+            <label>
+              Content learned
+              <input id="topic" maxlength="140" required placeholder="e.g. ATP–PC system rate and yield">
+            </label>
+            <label>
+              Date learned
+              <input id="learnedDate" type="date" required>
+            </label>
+            <label>
+              Retrieval prompt
+              <textarea id="prompt" maxlength="400" rows="4" placeholder="e.g. Without notes, explain the fuel, rate, yield and limitations of the ATP–PC system."></textarea>
+            </label>
+            <button class="btn primary full" type="submit">Add to review plan</button>
+          </form>
+        </section>
+
+        <section class="panel section">
+          <span class="eyebrow">ACHIEVEMENTS</span>
+          <h2>Badge cabinet</h2>
+          <div id="badgeGrid" class="badges"></div>
+        </section>
+
+        <section class="panel section">
+          <span class="eyebrow">BACKUP</span>
+          <h2>Protect your progress</h2>
+          <p class="small">Progress is stored on this device. Export a backup before changing devices or clearing browser data.</p>
+          <button id="exportBtn" class="btn secondary full">Export backup</button>
+          <label class="btn secondary full file-label">
+            Import backup
+            <input id="importInput" type="file" accept=".json,application/json">
+          </label>
+          <button id="resetBtn" class="danger-link">Reset all app data</button>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <dialog id="reviewDialog">
+    <div class="dialog-content">
+      <button id="closeDialog" class="close" aria-label="Close">×</button>
+      <span id="dialogStage" class="eyebrow"></span>
+      <h2 id="dialogTopic"></h2>
+      <p class="instruction">Close your notes. Answer aloud or on paper before checking your notes.</p>
+      <div class="prompt-box">
+        <strong>RETRIEVAL PROMPT</strong>
+        <p id="dialogPrompt"></p>
+      </div>
+      <label>
+        How confident were you before checking?
+        <input id="confidence" type="range" min="1" max="5" value="3">
+        <div class="confidence">
+          <span>1 — unsure</span>
+          <strong id="confidenceNumber">3</strong>
+          <span>5 — secure</span>
+        </div>
+      </label>
+      <label>
+        What did you forget or need to correct?
+        <textarea id="reflection" rows="3" maxlength="400" placeholder="Record one correction or key point."></textarea>
+      </label>
+      <div class="dialog-actions">
+        <button id="cancelReview" class="btn secondary">Not yet</button>
+        <button id="completeReview" class="btn primary">Complete review</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
